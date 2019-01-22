@@ -20,6 +20,11 @@ int main(int argc, char **argv)
     SDL_Log("GL_VERSION: %s \n", glGetString(GL_VERSION));
     SDL_Log("GL_SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
+    glClearColor(1.0, 0.5, 0.7, 1);
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+
     for (;;)
     {
         SDL_Event event;
@@ -28,6 +33,8 @@ int main(int argc, char **argv)
             if (event.type == SDL_QUIT)
                 return 0;
         }
+
+        glClear(GL_COLOR_BUFFER_BIT);
 
         SDL_GL_SwapWindow(window);
     }
