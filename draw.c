@@ -117,6 +117,8 @@ int main(int argc, char **argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
         SDL_GL_SwapWindow(window);
     }
 
