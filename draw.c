@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <glad.h>
+#include <glad/glad.h>
 
 int main(int argc, char **argv)
 {
@@ -19,6 +19,8 @@ int main(int argc, char **argv)
             if (event.type == SDL_Quit)
                 return 0;
         }
+
+        SDL_GL_SwapWindow(window);
     }
 
     return 0;
