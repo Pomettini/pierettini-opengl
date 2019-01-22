@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 typedef int (*adder_signature)(int a, int b);
+typedef const char **myname_signature;
 
 int main(int argc, char **argv)
 {
@@ -18,6 +19,8 @@ int main(int argc, char **argv)
         return -1;
     }
     adder_signature adder = (adder_signature)GetProcAddress(handle, "adder");
+    myname_signature myname = GetProcAddress(handle, "myname");
+    
 #else
     void *handle = dlopen("plugin.so", RTLD_LAZY);
     if (!handle)
@@ -26,6 +29,7 @@ int main(int argc, char **argv)
         return -1;
     }
     adder_signature adder = (adder_signature)dlsym(handle, "adder");
+    myname_signature myname = dlsym(handle, "myname");
 #endif
     if (!adder)
     {
@@ -34,5 +38,6 @@ int main(int argc, char **argv)
     }
 
     printf("adder() result is %d\n", adder(1, 2));
+    printf("myname result is %s\n", *myname);
     return 0;
 }
