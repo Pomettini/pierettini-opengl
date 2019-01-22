@@ -89,15 +89,22 @@ int main(int argc, char **argv)
     glGenBuffers(2, vbo);
 
     float vertices[] = {
-            0, 0, 0,
-            -0.5, -1, 0,
-            0.5, -1, 0
-    };
+        0, 0, 0,
+        -0.5, -1, 0,
+        0.5, -1, 0};
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+    float colors[] = {
+        1, 1, 1,
+        1, 0, 1,
+        0, 1, 0};
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Create a new program/pipeline (in GPU)
     GLuint program = glCreateProgram();
@@ -120,6 +127,12 @@ int main(int argc, char **argv)
 
     glUseProgram(program);
 
+    GLint x_uniform = glGetUniformLocation(program, "x");
+    GLint y_uniform = glGetUniformLocation(program, "y");
+
+    float triangle_x = 0;
+    float triangle_y = 0;
+
     for (;;)
     {
         SDL_Event event;
@@ -127,9 +140,24 @@ int main(int argc, char **argv)
         {
             if (event.type == SDL_QUIT)
                 return 0;
+
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym == SDLK_RIGHT)
+                    triangle_x += 0.01;
+                if (event.key.keysym.sym == SDLK_LEFT)
+                    triangle_x -= 0.01;
+                if (event.key.keysym.sym == SDLK_UP)
+                    triangle_y += 0.01;
+                if (event.key.keysym.sym == SDLK_DOWN)
+                    triangle_y -= 0.01;
+            }
         }
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUniform1f(x_uniform, triangle_x);
+        glUniform1f(y_uniform, triangle_y);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
