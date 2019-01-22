@@ -10,10 +10,15 @@ PLUGIN_API const char *myname = "foobar";
 
 PLUGIN_API int adder(int a, int b)
 {
-    return a+b;
+    return a + b;
 }
 
 PLUGIN_API void printer()
 {
-    printf("Hello World");
+    printf("Hello World\n");
+}
+
+PLUGIN_API const char *yourmom()
+{
+    return "yourmom";
 }
