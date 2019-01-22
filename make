@@ -1,0 +1,1 @@
+clang -shared -o plugin.so plugin.c
