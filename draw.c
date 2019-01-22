@@ -85,6 +85,20 @@ int main(int argc, char **argv)
     // Vind the VAO (in GPU), now it is the active one
     glBindVertexArray(vao);
 
+    GLuint vbo[2];
+    glGenBuffers(2, vbo);
+
+    float vertices[] = {
+            0, 0, 0,
+            -0.5, -1, 0,
+            0.5, -1, 0
+    };
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+
+
     // Create a new program/pipeline (in GPU)
     GLuint program = glCreateProgram();
 
