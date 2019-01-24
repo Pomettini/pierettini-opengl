@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
+#include "libfbxc.h"
 
 GLuint compile_shader(GLenum shader_type, const char *filename)
 {
