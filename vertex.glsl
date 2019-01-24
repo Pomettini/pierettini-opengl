@@ -6,6 +6,7 @@ layout(location=2) in vec2 model_uv;
 
 out vec3 light_vertex;
 out vec3 light_normal;
+out vec2 uv;
 
 uniform float rot;
 
@@ -36,6 +37,8 @@ void main()
 
     light_vertex = normalize(normal);
     light_normal = normalize(light - world_position);
+
+    uv = normalize(model_uv);
 
     gl_Position = vec4(new_x, new_y, new_z, 1);
 }

@@ -1,6 +1,8 @@
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
 #include "libfbxc.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 GLuint compile_shader(GLenum shader_type, const char *filename)
 {
@@ -92,8 +94,8 @@ int main(int argc, char **argv)
     // bind the VAO (in GPU). now it is the active one
     glBindVertexArray(vao);
 
-    GLuint vbo[2];
-    glGenBuffers(2, vbo);
+    GLuint vbo[3];
+    glGenBuffers(3, vbo);
 
     fbxc_scene_t mannequin = *fbxc_parse_file("Mannequin.FBX");
 
@@ -106,6 +108,11 @@ int main(int argc, char **argv)
     glBufferData(GL_ARRAY_BUFFER, mannequin.normals_len * sizeof(float), mannequin.normals, GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, mannequin.uvs_len * sizeof(float), mannequin.uvs, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     // create a new program/pipeline (in GPU)
     GLuint program = glCreateProgram();
@@ -131,7 +138,26 @@ int main(int argc, char **argv)
 
     GLint rot_uniform = glGetUniformLocation(program, "rot");
 
+    GLuint texture;
+
     float rot_y = 0;
+
+    int w, h, comp;
+    unsigned char *pixels = stbi_load("Texture.TGA", &w, &h, &comp, 4);
+    if (!pixels)
+    {
+        exit(1);
+    }
+    
+    glGenTextures(1, &texture);
+    
+    printf("%d %d %d  %d\n", w, h, texture, comp);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     for (;;)
     {
