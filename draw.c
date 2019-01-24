@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
+#include "libfbxc.h"
 
 GLuint compile_shader(GLenum shader_type, const char *filename)
 {
@@ -90,6 +91,9 @@ int main(int argc, char **argv)
 
     GLuint vbo[2];
     glGenBuffers(2, vbo);
+
+    fbxc_scene_t mannequin = *fbxc_parse_file("SK_Mannequin.FBX");
+    SDL_Log("%d", mannequin.minor);
 
     float vertices[] = {
         0, 0, 0,

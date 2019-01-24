@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     }
     adder_signature adder = (adder_signature)GetProcAddress(handle, "adder");
     myname_signature myname = GetProcAddress(handle, "myname");
-    
+
 #else
     void *handle = dlopen("plugin.so", RTLD_LAZY);
     if (!handle)
