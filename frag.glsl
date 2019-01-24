@@ -8,5 +8,5 @@ in vec3 light_normal;
 void main()
 {
     float lambert = clamp(dot(light_vertex, light_normal), 0, 1);
-    color = vec4(vertex_color * lambert, 1);
+    color = vec4(vec3(1, 1, 1) * lambert, 1);
 }

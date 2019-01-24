@@ -34,8 +34,8 @@ void main()
     float new_y = linear_convert(world_position.y, -200, 200, -1, 1);
     float new_z = linear_convert(world_position.z, -200, 200, -1, 1);
 
-    light_normal_out = vec(1, 1, 1);
+    light_vertex = normalize(normal);
+    light_normal = normalize(light - world_position);
 
     gl_Position = vec4(new_x, new_y, new_z, 1);
-    vertex_color = vec3(normal.x, normal.y, normal.z);
 }
