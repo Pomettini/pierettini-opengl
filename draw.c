@@ -75,10 +75,10 @@ int main(int argc, char **argv)
     // load GL symbols
     gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 
-    SDL_Log("GL_VENDOR: %s", glGetString(GL_VENDOR));
-    SDL_Log("GL_RENDERER: %s", glGetString(GL_RENDERER));
-    SDL_Log("GL_VERSION: %s", glGetString(GL_VERSION));
-    SDL_Log("GL_SHADING_LANGUAGE_VERSION: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    // SDL_Log("GL_VENDOR: %s", glGetString(GL_VENDOR));
+    // SDL_Log("GL_RENDERER: %s", glGetString(GL_RENDERER));
+    // SDL_Log("GL_VERSION: %s", glGetString(GL_VERSION));
+    // SDL_Log("GL_SHADING_LANGUAGE_VERSION: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     // set the current clear color
     glClearColor(1, 0, 0, 1);
@@ -92,26 +92,23 @@ int main(int argc, char **argv)
     GLuint vbo[2];
     glGenBuffers(2, vbo);
 
-    fbxc_scene_t mannequin = *fbxc_parse_file("SK_Mannequin.FBX");
-    SDL_Log("%d", mannequin.minor);
+    fbxc_scene_t mannequin = *fbxc_parse_file("Mannequin.FBX");
+    // SDL_Log("%f %f %f", mannequin.vertices[0], mannequin.vertices[1], mannequin.vertices[2]);
+    // SDL_Log("%f %f %f", mannequin.vertices[3], mannequin.vertices[4], mannequin.vertices[5]);
 
-    float vertices[] = {
-        0, 0, 0,
-        -0.5, -1, 0,
-        0.5, -1, 0};
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mannequin.vertices_len * sizeof(float), mannequin.vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    float colors[] = {
-        1, 1, 1,
-        1, 0, 1,
-        0, 1, 0};
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    // float colors[] = {
+    //     1, 1, 1,
+    //     1, 0, 1,
+    //     0, 1, 0};
+    // glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    // glEnableVertexAttribArray(1);
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // create a new program/pipeline (in GPU)
     GLuint program = glCreateProgram();
@@ -167,7 +164,7 @@ int main(int argc, char **argv)
         glUniform1f(x_uniform, triangle_x);
         glUniform1f(y_uniform, triangle_y);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, mannequin.vertices_len / 3);
 
         SDL_GL_SwapWindow(window);
     }
