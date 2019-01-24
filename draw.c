@@ -80,6 +80,9 @@ int main(int argc, char **argv)
     // SDL_Log("GL_VERSION: %s", glGetString(GL_VERSION));
     // SDL_Log("GL_SHADING_LANGUAGE_VERSION: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE | GL_FRONT);
+
     // set the current clear color
     glClearColor(1, 0, 0, 1);
 
@@ -93,22 +96,16 @@ int main(int argc, char **argv)
     glGenBuffers(2, vbo);
 
     fbxc_scene_t mannequin = *fbxc_parse_file("Mannequin.FBX");
-    // SDL_Log("%f %f %f", mannequin.vertices[0], mannequin.vertices[1], mannequin.vertices[2]);
-    // SDL_Log("%f %f %f", mannequin.vertices[3], mannequin.vertices[4], mannequin.vertices[5]);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, mannequin.vertices_len * sizeof(float), mannequin.vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    // float colors[] = {
-    //     1, 1, 1,
-    //     1, 0, 1,
-    //     0, 1, 0};
-    // glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-    // glEnableVertexAttribArray(1);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, mannequin.normals_len * sizeof(float), mannequin.normals, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // create a new program/pipeline (in GPU)
     GLuint program = glCreateProgram();
@@ -132,11 +129,9 @@ int main(int argc, char **argv)
     // set the currently active program/pipeline
     glUseProgram(program);
 
-    GLint x_uniform = glGetUniformLocation(program, "x");
-    GLint y_uniform = glGetUniformLocation(program, "y");
+    GLint rot_uniform = glGetUniformLocation(program, "rot");
 
-    float triangle_x = 0;
-    float triangle_y = 0;
+    float rot_y = 0;
 
     for (;;)
     {
@@ -149,25 +144,22 @@ int main(int argc, char **argv)
             if (event.type == SDL_KEYDOWN)
             {
                 if (event.key.keysym.sym == SDLK_RIGHT)
-                    triangle_x += 0.1;
+                    rot_y += 0.1;
                 if (event.key.keysym.sym == SDLK_LEFT)
-                    triangle_x -= 0.1;
-                if (event.key.keysym.sym == SDLK_UP)
-                    triangle_y += 0.1;
-                if (event.key.keysym.sym == SDLK_DOWN)
-                    triangle_y -= 0.1;
+                    rot_y -= 0.1;
             }
         }
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUniform1f(x_uniform, triangle_x);
-        glUniform1f(y_uniform, triangle_y);
+        glUniform1f(rot_uniform, rot_y);
 
         glDrawArrays(GL_TRIANGLES, 0, mannequin.vertices_len / 3);
 
         SDL_GL_SwapWindow(window);
     }
+
+    fbxc_scene_free(&mannequin);
 
     return 0;
 }

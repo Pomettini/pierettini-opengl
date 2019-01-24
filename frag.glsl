@@ -1,9 +1,12 @@
 #version 410 core
 
 out vec4 color;
-in vec3 vertex_color;
+
+in vec3 light_vertex;
+in vec3 light_normal;
 
 void main()
 {
-    color = vec4(1, 1, 1, 1);
+    float lambert = clamp(dot(light_vertex, light_normal), 0, 1);
+    color = vec4(vertex_color * lambert, 1);
 }
