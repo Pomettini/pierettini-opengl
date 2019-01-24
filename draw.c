@@ -92,6 +92,9 @@ int main(int argc, char **argv)
     GLuint vbo[2];
     glGenBuffers(2, vbo);
 
+    fbxc_scene_t mannequin = *fbxc_parse_file("SK_Mannequin.FBX");
+    SDL_Log("%d", mannequin.minor);
+
     float vertices[] = {
         0, 0, 0,
         -0.5, -1, 0,
