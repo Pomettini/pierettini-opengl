@@ -7,6 +7,21 @@ out vec3 vertex_color;
 uniform float x;
 uniform float y;
 
+vec3 rotate_y(vec3 v, float rot)
+{
+    vec3 vo;
+    vo.x = cos(rot) * v.x - sin(rot) + v.z;
+    vo.y = v.y;
+    vo.z = sin(rot) * v.x + cos(rot) + v.z;
+    return vo;
+}
+
+float linear_convert(float value, float old_min, float old_max, float new_min)
+{
+    float gradient = (value - old_min) / (old_max - old_min);
+    return new_min + gradient * (new_max - new_min);
+}
+
 void main()
 {
     // gl_Position = vec4(0, 0, 0, 1);
